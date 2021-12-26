@@ -5,16 +5,22 @@ import NextImage from 'next/image';
 import { auth } from '../lib/mutations';
 
 const AuthForm: FC<{ mode: 'signin' | 'signup' }> = ({ mode }) => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
+  const isSignup = mode === 'signup';
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
-    await auth(mode, { email, password });
+    const optional = isSignup ? { firstName, lastName } : null;
+
+    await auth(mode, { email, password, ...optional });
     setIsLoading(false);
     router.push('/');
   };
@@ -27,6 +33,20 @@ const AuthForm: FC<{ mode: 'signin' | 'signup' }> = ({ mode }) => {
       <Flex justify="center" align="center" height="calc(100vh - 100px)">
         <Box padding="50px" bg="gray.900" borderRadius="6px">
           <form onSubmit={handleSubmit}>
+            {isSignup && (
+              <>
+                <Input
+                  placeholder="firstName"
+                  type="firstName"
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+                <Input
+                  placeholder="lastName"
+                  type="lastName"
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+              </>
+            )}
             <Input placeholder="email" type="email" onChange={(e) => setEmail(e.target.value)} />
             <Input
               placeholder="password"

@@ -29,11 +29,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       cookie.serialize('JWT_AUTH', token, {
         httpOnly: true, // cant access cookie via client javascript
         maxAge: 8 * 60 * 60,
-        path: '/', //what route has access to this cookie - here whole site
-        sameSite: 'lax', //should share cookie to third party, "strict" would not allow
+        path: '/', //   what route has access to this cookie - here whole site
+        sameSite: 'lax', // should share cookie to third party, "strict" would not allow
         secure: process.env.NODE_ENV === 'production', // should be encrypted only in prod
       })
     );
+
+    res.status(200).json(user);
   } else {
     res.status(401).json({ error: 'Email or password is wrong. Try again.' });
   }
