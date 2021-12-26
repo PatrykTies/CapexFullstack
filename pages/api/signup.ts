@@ -4,41 +4,47 @@ import jwt from 'jsonwebtoken';
 import cookie from 'cookie';
 import prisma from '../../lib/prisma';
 
- export default async (req: NextApiRequest,res: NextApiResponse) => {
-    const salt = bcrypt.genSaltSync();
-    const {email, password} = req.body;
+export default async (req: NextApiRequest, res: NextApiResponse) => {
+  const salt = bcrypt.genSaltSync();
+  const { email, password, firstName, lastName } = req.body;
 
-    let user;
+  let user;
 
-    try{
-        user = await prisma.user.create({
-            data:{
-                email,
-                password: bcrypt.hashSync(password, salt),
-            }
-        })
-    }catch(e){
-        res.status(401);
-        res.json({error: 'User already exists.'});
-        return;
-    }
+  try {
+    user = await prisma.user.create({
+      data: {
+        email,
+        password: bcrypt.hashSync(password, salt),
+        firstName,
+        lastName,
+      },
+    });
+  } catch (e) {
+    res.status(401);
+    res.json({ error: 'User already exists.' });
+    return;
+  }
 
-    const token = jwt.sign({
-        email: user.email,
-        id: user.id,
-        time: Date.now(),
-    }, 'secretkey', {expiresIn: '8h'});
+  const token = jwt.sign(
+    {
+      email: user.email,
+      id: user.id,
+      time: Date.now(),
+    },
+    'secretkey',
+    { expiresIn: '8h' }
+  );
 
-    res.setHeader(
-        'Set-Cookie',
-        cookie.serialize('JWT_AUTH', token, {
-            httpOnly: true,
-            maxAge: 8 * 60 * 60,
-            path:'/',
-            sameSite: 'lax',
-            secure: process.env.NODE_ENV === 'production'
-        })
-    )
+  res.setHeader(
+    'Set-Cookie',
+    cookie.serialize('JWT_AUTH', token, {
+      httpOnly: true,
+      maxAge: 8 * 60 * 60,
+      path: '/',
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+    })
+  );
 
-    res.status(200).json(user);
- }
+  res.status(200).json(user);
+};
