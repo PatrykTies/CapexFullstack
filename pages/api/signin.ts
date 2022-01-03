@@ -24,6 +24,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       { expiresIn: '8h' }
     );
 
+    // httpOnly auth cookie for web only
     res.setHeader(
       'Set-Cookie',
       cookie.serialize('JWT_AUTH', token, {
@@ -35,8 +36,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       })
     );
 
-    res.status(200).json(user);
+    res.status(200).json({ success: true, data: { ...user, token } });
   } else {
-    res.status(401).json({ error: 'Email or password is wrong. Try again.' });
+    res.status(401).json({ success: false, error: 'Email or password is wrong. Try again.' });
   }
 };
