@@ -3,7 +3,6 @@ import React from 'react';
 import 'react-day-picker/lib/style.css';
 // Components
 import RangeDayPicker from '../components/playground/RangePicker';
-import AvailabilityCalendar from '../components/playground/AvailabilityCalendar';
 import AvailabilityCell from '../components/playground/AvailabilityCell';
 import CalendarNavbar from '../components/playground/CalendarNavbar';
 
