@@ -11,20 +11,23 @@ const CalendarNavbar = ({
   const months = localeUtils.getMonths();
   const prev = months[previousMonth.getMonth()];
   const next = months[nextMonth.getMonth()];
-  const styleLeft = {
-    float: 'left',
-  };
-  const styleRight = {
-    float: 'right',
-  };
+
   return (
     <div className={className}>
-      <button type="button" style={styleLeft} onClick={() => onPreviousClick()}>
+      <button type="button" className="left" onClick={() => onPreviousClick()}>
         ← {prev.slice(0, 3)}
       </button>
-      <button type="button" style={styleRight} onClick={() => onNextClick()}>
+      <button type="button" className="right" onClick={() => onNextClick()}>
         {next.slice(0, 3)} →
       </button>
+      <style jsx>{`
+        .left {
+          float: left;
+        }
+        .right {
+          float: right;
+        }
+      `}</style>
     </div>
   );
 };
